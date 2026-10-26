@@ -1,0 +1,18 @@
+Build your own home dashboard with the free PRMGR Observatory Starter:
+
+Download v1.0.0:
+https://github.com/prmgr-org/prmgr-observatory-starter/releases/download/v1.0.0/prmgr-observatory-starter-v1.0.0.zip
+
+Source code + beginner setup guide:
+https://github.com/prmgr-org/prmgr-observatory-starter
+
+Connecting your own devices + Homey:
+https://github.com/prmgr-org/prmgr-observatory-starter/blob/main/docs/CONNECTIONS.md
+
+The demo opens straight in your browser and uses clearly labelled sample data. Customize the design, import your own readings, and optionally run a local recorder. This is the starter foundation, rather than my complete personal setup; adapt connections to your own equipment. An installed TV app is not included.
+
+Optional recorder runtime: https://nodejs.org/en/download
+Homey documentation: https://api.developer.homey.app/
+HomeyScript: https://homey.app/a/com.athom.homeyscript
+
+Free source under MIT. Start small: one device, one useful question.
