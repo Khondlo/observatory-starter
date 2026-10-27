@@ -25,7 +25,7 @@ For a continuous Homey adapter, follow the official [Homey Web API documentation
 
 ## Direct local equipment
 
-Heat pumps, inverters and meters may expose local APIs or protocols such as Modbus. “It has Wi-Fi” does not establish that an accessible reading exists. Check the exact device model, documented protocol, register definitions, unit scaling and permissions first.
+Garage meters and smart plugs may expose local APIs or protocols such as Modbus. “It has Wi-Fi” does not establish that an accessible reading exists. Check the exact device model, documented protocol, register definitions, unit scaling and permissions first.
 
 No device-specific polling or register map is shipped here. A connection supported on Peter’s equipment is not automatically supported on yours. Start with one read-only measurement, compare it against a trustworthy display, then have your adapter write schema-1 JSON.
 
@@ -34,7 +34,6 @@ Your adapter should:
 - Read only what you need, with appropriate timeouts and polling intervals.
 - Convert units to the documented format.
 - Preserve measurement times and reject stale/unavailable values.
-- Align independent source timestamps before calculating a building split.
 - Write its output atomically (temporary file then rename).
 - Keep device addresses, IDs, tokens and credentials outside `public/`.
 

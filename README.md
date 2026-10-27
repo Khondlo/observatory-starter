@@ -1,6 +1,6 @@
 # PRMGR Observatory Starter
 
-A free, local-first foundation for a dashboard that helps you understand your home. Inspired by the PRMGR Home Observatory build: muted green panels, warm highlights, an illustrated home, and readings with context.
+A free, local-first foundation for a dashboard that helps you understand your garage's power use. Inspired by the PRMGR Home Observatory build: muted green panels, warm highlights, an illustrated home, and readings with context.
 
 [Download the starter](https://github.com/prmgr-org/prmgr-observatory-starter/releases/latest) · [Connection guide](docs/CONNECTIONS.md)
 
@@ -11,28 +11,25 @@ A free, local-first foundation for a dashboard that helps you understand your ho
 1. Download and unzip the starter package.
 2. Open the `public` folder.
 3. Double-click **`index.html`**. It opens in your browser.
-4. Try **Home overview**, **Heat pump**, **Explore readings**, and **Make it yours**.
+4. The **Garage** view shows the latest reading, a chart over time and the most recent samples.
 
-Every initial reading is **synthetic demo data**, not measurements from Peter’s home or yours. The illustration is a generic original SVG. Nothing connects to Homey or your equipment automatically.
+Every initial reading is **synthetic demo data**, not measurements from Peter’s garage or yours. The illustration is a generic original SVG. Nothing connects to Homey or your equipment automatically.
 
 If your browser restricts local files, use the optional local server below. Chrome and Edge are good starting points. The packaged demo has also been tested in Chrome; other browsers have not been formally verified.
 
 ## What is included?
 
-- Home overview: solar generation, site consumption, grid import/export, battery charge.
-- A house/garage split, only when the supplied sample supports it.
-- Hot-water temperature and compressor-frequency history.
-- Measurement explorer, latest-sample table, explicit missing data.
+- Garage view: latest garage consumption, a 1/6/24-hour chart, latest-sample table, explicit missing data.
 - JSON import/export with validation; imports remain in the current tab’s memory.
 - A read-only HomeyScript export example you configure for your own devices.
 - An optional local Node server and recorder for an adapter-produced JSON file.
 - Editable labels and generic house artwork; source code under MIT.
 
-This is a starter, not the complete personal system shown in the video. It does **not** include automatic device discovery, a Homey login flow, ready-made NIBE/GoodWe/Shelly integrations, electricity billing, device controls, camera feeds, an Android TV APK, or TV Home-button replacement. It is usable in a browser on a large display; installing a native TV app is separate work.
+This is a starter, not the complete personal system shown in the video. It covers the garage only: solar, grid, battery, house and heat-pump readings are not part of this version. It does **not** include automatic device discovery, a Homey login flow, ready-made NIBE/GoodWe/Shelly integrations, electricity billing, device controls, camera feeds, an Android TV APK, or TV Home-button replacement. It is usable in a browser on a large display; installing a native TV app is separate work.
 
 ## Try importing a dataset
 
-Click **Import readings**, then choose `examples/readings.json`. This is another **synthetic** example, saved with its own timestamps. Switch to **Explore readings** to see the sample table. Click **Export JSON** to keep a copy.
+Click **Import readings**, then choose `examples/readings.json`. This is another **synthetic** example, saved with its own timestamps. Check the sample table at the bottom of the page. Click **Export JSON** to keep a copy.
 
 Reloading the page returns to demo. Your imports are not sent to a server or saved to browser storage. If you serve the app on a public website, imported readings still stay in the browser; the optional recorder endpoint belongs on a local server.
 
@@ -87,7 +84,7 @@ The recorder only reads that local file. Building the connection between your eq
 
 ## Make it look like your home
 
-Edit `public/config.js` in a text editor. Change the title and building labels. Keep passwords and tokens out of this file.
+Edit `public/config.js` in a text editor. Change the title and the garage label. Keep passwords and tokens out of this file.
 
 Replace the illustration with your own SVG, PNG, JPG, or WebP in `public/assets`, then change `illustration` to its relative path. Use a simple filename such as `my-house.webp`. The local server serves image files only from that assets folder. Use artwork you own or have permission to distribute. The included SVG is generic and may be modified under MIT.
 
@@ -112,14 +109,11 @@ Supply `/input/readings.json`, and grant the container’s `node` user write acc
 - Pick one question before adding more devices.
 - Verify units against the device or another measurement you trust.
 - Keep missing or stale readings unknown; never silently replace them with zero.
-- Site consumption is not the same as grid import when solar or batteries are involved.
-- A charger already measured by the site meter must not be added twice.
-- A compressor’s frequency is not a verified electrical-power reading.
-- Align source meter timestamps before calculating a building split.
+- A garage submeter reading is part of the site total, not additional demand.
 
 ## Troubleshooting
 
-**No readings after importing:** The file may contain nulls for that metric. Try another measurement or inspect the latest-sample table.
+**No readings after importing:** The file may contain nulls for `garage`. Inspect the latest-sample table.
 
 **Recorder says “No newer samples”:** Update the input file with a genuinely new measurement timestamp. The recorder intentionally preserves the old time.
 

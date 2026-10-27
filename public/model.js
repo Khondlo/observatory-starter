@@ -1,14 +1,7 @@
 (function (root) {
   'use strict';
   const metrics = {
-    solar: {label:'Solar generation',unit:'W',color:'#d3b877'},
-    siteLoad: {label:'Site consumption',unit:'W',color:'#d59873'},
     garage: {label:'Garage consumption',unit:'W',color:'#8aaeb0'},
-    gridNet: {label:'Grid exchange',unit:'W',color:'#adbc90'},
-    batterySOC: {label:'Battery charge',unit:'%',color:'#a9c190'},
-    hotWater: {label:'Hot water',unit:'°C',color:'#dc9977'},
-    outdoor: {label:'Outdoor temperature',unit:'°C',color:'#8aaeb0'},
-    compressor: {label:'Compressor frequency',unit:'Hz',color:'#adbc90'},
   };
   function validate(input) {
     if(!input || input.schemaVersion!==1 || !Array.isArray(input.samples) || !input.samples.length || input.samples.length>5000) throw Error('Use schemaVersion 1 with 1–5,000 samples.');
@@ -21,7 +14,7 @@
       for(const [key,value] of Object.entries(s.values)) {
         if(!Object.hasOwn(metrics,key)) throw Error('Unknown measurement: '+key);
         if(value!==null && (typeof value!=='number' || !Number.isFinite(value) || Math.abs(value)>1e9)) throw Error(key+': use a finite number or null.');
-        if(value!==null && ((key==='batterySOC' && (value<0||value>100)) || (['solar','siteLoad','garage','compressor'].includes(key)&&value<0))) throw Error(key+': value outside the supported range.');
+        if(value!==null && value<0) throw Error(key+': value outside the supported range.');
         values[key]=value;
       }
       return {at:new Date(s.at).toISOString(),values};
@@ -30,20 +23,14 @@
     const source=typeof input.source==='string'?input.source.trim().slice(0,100):'Imported readings';
     return {schemaVersion:1,source:source||'Imported readings',samples};
   }
-  function houseLoad(values) {
-    const {siteLoad,garage}=values;
-    return Number.isFinite(siteLoad)&&Number.isFinite(garage)&&siteLoad>=garage ? siteLoad-garage : null;
-  }
   function demo(now=Date.now()) {
     const end=Math.floor(now/300000)*300000,samples=[];
     for(let i=0;i<=288;i++) {
-      const at=end-(288-i)*300000,d=new Date(at),hour=d.getHours()+d.getMinutes()/60;
-      const solar=Math.round(Math.max(0,Math.sin((hour-6)/12*Math.PI))*5400);
-      const garage=Math.round(260+Math.max(0,Math.sin(i/13))*650),siteLoad=garage+Math.round(850+Math.max(0,Math.sin(i/9))*1600);
+      const at=end-(288-i)*300000,garage=Math.round(260+Math.max(0,Math.sin(i/13))*650);
       const missing=i>172&&i<177;
-      samples.push({at:new Date(at).toISOString(),values:{solar:missing?null:solar,siteLoad:missing?null:siteLoad,garage:missing?null:garage,gridNet:missing?null:siteLoad-solar,batterySOC:Math.round(52+Math.sin(i/70)*25),hotWater:missing?null:Math.round((47+Math.sin(i/18)*5)*10)/10,outdoor:Math.round((9+Math.sin((hour-8)/24*Math.PI*2)*5)*10)/10,compressor:missing?null:(i%43<16?42:0)}});
+      samples.push({at:new Date(at).toISOString(),values:{garage:missing?null:garage}});
     }
-    return {schemaVersion:1,source:'Synthetic demo · not a real home',samples};
+    return {schemaVersion:1,source:'Synthetic demo · not a real garage',samples};
   }
   function latest(data){return data.samples.at(-1);}
   function age(data,now=Date.now()){return Math.max(0,now-Date.parse(latest(data).at));}
@@ -55,5 +42,5 @@
     for(const s of samples){const value=s.values[key],time=Date.parse(s.at);if(!Number.isFinite(value)){if(current.length)segments.push(current);current=[];prev=null;continue;}if(prev!==null&&time-prev>600000){if(current.length)segments.push(current);current=[];}current.push([20+(time-start)/Math.max(1,end-start)*(width-40),15+(max-value)/(max-min)*(height-30),s]);prev=time;}
     if(current.length)segments.push(current);return segments;
   }
-  root.ObservatoryModel={metrics,validate,demo,latest,age,houseLoad,pathSegments};
+  root.ObservatoryModel={metrics,validate,demo,latest,age,pathSegments};
 })(globalThis);
